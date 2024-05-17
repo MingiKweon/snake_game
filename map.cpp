@@ -39,11 +39,10 @@ void map(WINDOW *win)
                 x = 0;
         }
     }
-
-    // snake_move(win);
-    mvwprintw(win, 10 + 1, 32 + 1, "H");
-    mvwprintw(win, 10 + 1, 35 + 1, "B");
-    mvwprintw(win, 10 + 1, 38 + 1, "B");
+    static int i = 32;
+    snake_move(win, i);
+    // printw(to_string(i).c_str());
+    i -= 3;
 }
 
 int main(void)
@@ -60,9 +59,15 @@ int main(void)
     box(win, 0, 0);
     attron(COLOR_PAIR(2));
     wbkgd(win, COLOR_PAIR(2));
-    map(win); // 맵 출력
-    refresh();
 
+    int t = 5;
+    while (t--)
+    {
+        map(win); // 맵 출력
+        wrefresh(win);
+        napms(500);
+        // printw("hello");
+    }
     getch();
     delwin(win);
     endwin();
