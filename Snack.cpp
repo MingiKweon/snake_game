@@ -22,22 +22,22 @@ void Snake::move()
         {
         case KEY_LEFT:
             --posX;
-            addAt(win, posY, posX, '#');
+            addAt(board, posY, posX, '#');
             break;
 
         case KEY_RIGHT:
             ++posX;
-            addAt(win, posY, posX,'#');
+            addAt(board, posY, posX,'#');
             break;
 
         case KEY_UP:
             --posY;
-            addAt(win, posY, posX,'#');
+            addAt(board, posY, posX,'#');
             break;
 
         case KEY_DOWN:
             ++posY;
-            addAt(win, posY, posX, '#');
+            addAt(board, posY, posX, '#');
             break;
         
         case 'q': // 종료 조건

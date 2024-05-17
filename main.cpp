@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ncurses.h>
 #include "Board.hpp"
-//#include "map.cpp"
+#include "map.h"
 
 #define BOARD_DIM 17
 #define BOARD_ROWS BOARD_DIM
@@ -15,8 +15,7 @@ int main(){
     refresh();
     
     Board board(BOARD_ROWS, BOARD_COLS);
-    board.initialize();
-    //drawMap();
+    drawMap(board);
     int key;
     int posX = 5;
     int posY = 5;
@@ -31,25 +30,25 @@ int main(){
         {
         case KEY_LEFT:
             --posX;
-            board.addAt(posY, posX,'#');
+            board.addAt(posY, posX,'0');
             board.refresh();
             break;
 
         case KEY_RIGHT:
             ++posX;
-            board.addAt(posY, posX,'#');
+            board.addAt(posY, posX,'0');
             board.refresh();
-            break;
+            break; 
 
         case KEY_UP:
             --posY;
-            board.addAt(posY, posX,'#');
+            board.addAt(posY, posX,'0');
             board.refresh();
             break;
 
         case KEY_DOWN:
             ++posY;
-            board.addAt(posY, posX, '#');
+            board.addAt(posY, posX, '0');
             board.refresh();
             break;
         }

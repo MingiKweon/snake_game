@@ -1,4 +1,4 @@
 all: main
 
-main: main.cpp Board.hpp 
-	g++ main.cpp -lncurses -o main
+main: main.cpp Board.hpp map.h
+	g++ -o main main.cpp Board.cpp map.cpp -lncurses 

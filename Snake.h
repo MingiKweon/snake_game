@@ -1,7 +1,7 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-
+#include "Board.hpp"
 #include <vector>
 using namespace std;
 
@@ -11,10 +11,9 @@ public:
     Snake();
     ~Snake();
     void move();
-    void addAt(WINDOW * win, int y, int x, char ch);
+    void addAt(Board board, int y, int x, char ch);
     
 private:
-    WINDOW * win;
     vector<vector<int, int>> snakeHead;
     vector<vector<int, int>> snakeBody;
     int key;
