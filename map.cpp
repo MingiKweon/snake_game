@@ -1,4 +1,9 @@
 #include <ncurses.h>
+
+#define BOARD_DIM 17
+#define BOARD_ROWS BOARD_DIM
+#define BOARD_COLS BOARD_DIM * 2.5
+
 using namespace std;
 
 WINDOW * win = newwin(30, 30, 20, 20);
@@ -26,7 +31,7 @@ char map[21][21] = {
     {2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2}    
 };
 
-void drawMap()
+void drawMap(WINDOW * win)
 {
     for(int i = 0; i < 21; i++){
         for(int j = 0; j < 21; j++)
@@ -42,26 +47,33 @@ void drawMap()
                 case 2:
                     a = '*'; // 특별한 픽셀
                     break;
-                default:
-                    a = '?'; // 예외 처리
-                    break;
+
             }
-            mvwprintw(win, i + 1, j + 1, "%c", a);
-            wrefresh(win);
+            mvwprintw(win, i + 10, j + 10, "%c", a);
+
         }
     }
 }
+void addAt(WINDOW * win, int y, int x, char ch)
+    {
+        mvwprintw(win, y, x, "%c", ch);
+        wrefresh(win);
 
+    }
 int main()
 {   
     initscr();
-    start_color();
-    //box(stdscr, 0, 0);
-    WINDOW * win = newwin(0, 0, 0, 0); // 크기 크기 좌표 좌표
+    int xMax, yMax;
+    getmaxyx(stdscr, yMax, xMax);    
+    WINDOW * win = newwin(BOARD_ROWS + 21, BOARD_COLS + 21, (yMax/2)-(BOARD_ROWS/2), (xMax/2)-(BOARD_COLS/2));
     box(win, 0, 0);  
-    drawMap();
+    drawMap(win);
     refresh(); // 변경점 발생시 변경점 반영
     wrefresh(win); // wrefresh()는 대체로 refresh() 뒤에 오는 것이 좋음
+    int key;
+    int posX = 5, posY = 5;
+    keypad(stdscr, TRUE);
+
     getch();
     endwin();
 }
