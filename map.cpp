@@ -3,6 +3,17 @@
 #include <string>
 using namespace std;
 
+int **snake_location()
+{
+    int size = 1;
+    int **snake = new int *[size];
+
+    for (int i = 0; i < size; i++)
+        snake[i] = new int[2];
+
+    return snake;
+}
+
 void map(WINDOW *win)
 {
     int arr[21][21] = {
@@ -39,16 +50,16 @@ void map(WINDOW *win)
                 x = 0;
         }
     }
-    static int i = 32;
-    snake_move(win, i);
-    // printw(to_string(i).c_str());
-    i -= 3;
+
+    snake_move(win, snake_location);
 }
 
 int main(void)
 {
     initscr();
     // start_color();
+    keypad(stdscr, TRUE);
+    nodelay(stdscr, TRUE);
     init_pair(1, COLOR_WHITE, COLOR_BLACK);
     box(stdscr, 0, 0);
     attron(COLOR_PAIR(1));
@@ -60,15 +71,13 @@ int main(void)
     attron(COLOR_PAIR(2));
     wbkgd(win, COLOR_PAIR(2));
 
-    int t = 5;
-    while (t--)
+    while (true)
     {
-        map(win); // 맵 출력
-        wrefresh(win);
-        napms(500);
+        map(win);      // 맵 출력
+        wrefresh(win); // subwin에 해당되는 거 초기화해서 보여줌! refresh는 큰거
+        napms(250);
         // printw("hello");
     }
-    getch();
     delwin(win);
     endwin();
 
