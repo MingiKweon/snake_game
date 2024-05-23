@@ -1,24 +1,27 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef __BOARD__
+#define __BOARD__
 #include <ncurses.h>
-
+#include "Drawable.hpp"
+#include <cstdlib>
 
 
 class Board
 {
 public:
-    Board(int height = 10, int width = 10); // 생성자
-    ~Board();
+    Board(); // 디폴트
+    Board(int height, int width); // 생성자
     void initialize();
     void addBorder();
+    void add(Drawable drawable);
     void clear();
     void refresh();
-    char getInput();
+    int getInput();
     void addAt(int y, int x, char ch);
-    WINDOW* getWindow();
+    void getEmptyCoordinates(int& y, int& x);
 
 private:
-    WINDOW* board;
+    WINDOW* board_win;
+    int height, width;
 };
 
 #endif

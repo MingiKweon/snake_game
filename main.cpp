@@ -1,7 +1,9 @@
 #include <iostream>
 #include <ncurses.h>
 #include "Board.hpp"
-#include "map.h"
+#include "SnakeGame.hpp"
+#include "Drawable.hpp"
+
 
 #define BOARD_DIM 17
 #define BOARD_ROWS BOARD_DIM
@@ -10,53 +12,26 @@
 
 using namespace std;
 
+
 int main(){
     initscr();
     refresh();
-    
-    Board board(BOARD_ROWS, BOARD_COLS);
-    drawMap(board);
-    int key;
-    int posX = 5;
-    int posY = 5;
-    
-    board.refresh();
-    keypad(stdscr, TRUE);
-    while(true)
-    {   
-        // 상 하 좌 우
-        key = getch(); // 키보드 값을 읽음
-        switch (key)
-        {
-        case KEY_LEFT:
-            --posX;
-            board.addAt(posY, posX,'0');
-            board.refresh();
-            break;
 
-        case KEY_RIGHT:
-            ++posX;
-            board.addAt(posY, posX,'0');
-            board.refresh();
-            break; 
+    noecho();
+    curs_set(0); // 커서 미표시
+    SnakeGame game(BOARD_ROWS, BOARD_COLS);
 
-        case KEY_UP:
-            --posY;
-            board.addAt(posY, posX,'0');
-            board.refresh();
-            break;
+    while(!game.isOver())
+    {
+        game.input();
 
-        case KEY_DOWN:
-            ++posY;
-            board.addAt(posY, posX, '0');
-            board.refresh();
-            break;
-        }
-
+        game.updateState();
+        
+        game.redraw();
     }
-
-
     getch(); // key 가 입력되기 전까지 대기할 수 있도록 해줌
     endwin();
+    
     return 0;
 }
+// 게임의 총 순환을 관리하는 부분으로 사용되어야 해 보임

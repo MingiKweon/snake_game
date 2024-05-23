@@ -1,4 +1,18 @@
-all: main
+CC = g++
+CCFLAGS = -g
 
-main: main.cpp Board.hpp map.h
-	g++ -o main main.cpp Board.cpp map.cpp -lncurses 
+main: main.o Board.o Drawable.o Empty.o	Item.o Snake.o SnakeGame.o
+	$(CC) $(CCFLAGS) -o main main.o Board.o Drawable.o Empty.o Item.o Snake.o SnakeGame.o -lncurses
+
+clean:
+	rm -f *.o
+
+%.o : %.cpp %.hpp
+	$(CC) $(CCFLAGS) -c $<
+
+%.o : %.cpp
+	$(CC) $(CCFLAGS) -c $<
+
+% : %.cpp
+	$(CC) $(CCFLAGS) -o $<
+
