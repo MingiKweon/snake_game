@@ -8,7 +8,7 @@ SnakeGame::SnakeGame(int height, int width) : board(height, width), item(nullptr
 
 SnakeGame::~SnakeGame()
 {
-    delete item;
+    //delete item;
     delete itemPoison;
 }
 
@@ -64,6 +64,8 @@ void SnakeGame::input()
 
 void SnakeGame::updateState()
 {
+    time_t curTime = time(nullptr); // 현재 시간
+    // 아이템 생성
     if (item == nullptr)
     {
         int y, x;
@@ -71,7 +73,8 @@ void SnakeGame::updateState()
         item = new Item(y, x);
         board.add(*item);
     }
-
+    
+    // 독 아이템 생성
     if (itemPoison == nullptr)
     {
         int y, x;
@@ -127,6 +130,24 @@ void SnakeGame::updateState()
     }
     // 헤드가 벽에 박았을 경우 >> 벽 구현이 필요함
 
+    // 5초마다 아이템이 생겼다 사라짐
+    if (item != nullptr && difftime(curTime, item->saveTime) >= 5.0) // difftime의 반환형은 double이다
+    {
+        int itemRow = item->getY();
+        int itemCol = item->getX();
+        board.add(Empty(itemRow, itemCol));
+        delete item;
+        item = nullptr;
+    }
+    // 위와 동일 독 아이템
+    if (itemPoison != nullptr && difftime(curTime, itemPoison->saveTime) >= 5.0) // difftime의 반환형은 double이다
+    {
+        int itemPoisonRow = itemPoison->getY();
+        int itemPoisonCol = itemPoison->getX();
+        board.add(Empty(itemPoisonRow, itemPoisonCol));
+        delete itemPoison;
+        itemPoison = nullptr;
+    }
 
     snake.addPiece(next);
     board.add(next);

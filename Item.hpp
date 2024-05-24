@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include "Drawable.hpp"
+#include <ctime>
 #ifndef __ITEM__
 #define __ITEM__
 
@@ -8,16 +9,17 @@
 
 class Item : public Drawable
 {
+    
 public:
     Item(int y, int x);
-
+    time_t saveTime; // 시간을 저장할 변수
 };
 
 class ItemPoison : public Drawable
 {
 public:
     ItemPoison(int y, int x);
-
+    time_t saveTime;
 };
 
 class Gate : public Drawable
