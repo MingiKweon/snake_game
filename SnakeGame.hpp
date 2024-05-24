@@ -17,6 +17,7 @@ class SnakeGame
 
     Board board;
     Item *item;
+    ItemPoison *itemPoison;
     Snake snake;
     bool gameOver;
 public:

@@ -18,7 +18,7 @@ public:
     int getInput();
     void addAt(int y, int x, char ch);
     void getEmptyCoordinates(int& y, int& x);
-
+    void getWallCoordinates(int& y, int& x);
 private:
     WINDOW* board_win;
     int height, width;
