@@ -1,8 +1,8 @@
 CC = g++
 CCFLAGS = -g
 
-main: main.o Board.o Drawable.o Empty.o	Item.o Snake.o SnakeGame.o
-	$(CC) $(CCFLAGS) -o main main.o Board.o Drawable.o Empty.o Item.o Snake.o SnakeGame.o -lncurses
+main: main.o Board.o Drawable.o Map.o Item.o Snake.o SnakeGame.o
+	$(CC) $(CCFLAGS) -o main main.o Board.o Map.o Drawable.o Item.o Snake.o SnakeGame.o -lncurses
 
 clean:
 	rm -f *.o

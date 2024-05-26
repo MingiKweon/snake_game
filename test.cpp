@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ncurses.h>
 #include "Board.hpp"
-#include "map.h"
+//#include "map.h"
 
 #define BOARD_DIM 17
 #define BOARD_ROWS BOARD_DIM

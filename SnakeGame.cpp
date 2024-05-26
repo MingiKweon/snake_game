@@ -8,12 +8,17 @@ SnakeGame::SnakeGame(int height, int width) : board(height, width), item(nullptr
 
 SnakeGame::~SnakeGame()
 {
-    //delete item;
+    delete item;
     delete itemPoison;
+    delete gateA;
+    delete gateB;
 }
 
 void SnakeGame::initialize()
 {
+    board.drawMap();
+    gateA = nullptr;
+    gateB = nullptr;
     itemPoison = nullptr;
     item = nullptr;
     gameOver = false;
@@ -37,7 +42,8 @@ void SnakeGame::initialize()
     board.add(next);
     snake.addPiece(next);
 }
-
+// 꾹 누르게 되면 값은 변화하지 않는게 맞는데 단 input의 빠르게 많이 반복하여
+// update를 빠르고 많이 불러오게 되는 문제로 인해 뱀이 계속해서 움직임
 void SnakeGame::input()
 {
     int input = board.getInput();
@@ -45,21 +51,32 @@ void SnakeGame::input()
     {
     switch (input)
     {
-    case KEY_UP:
-        snake.setDirection(up);
+    case KEY_UP: // 반대방향 눌리지 않아야함, 같은 방향을 누를 수 없어야함
+        if (snake.getDirection() != up)
+        {
+            snake.setDirection(up);
+        }
         break;
     case KEY_DOWN:
-        snake.setDirection(down);
+        if (snake.getDirection() != up)
+        {
+            snake.setDirection(down);
+        }
         break;
     case KEY_LEFT:
-        snake.setDirection(left);
+        if (snake.getDirection() != right)
+        {
+            snake.setDirection(left);
+        }
         break;
     case KEY_RIGHT:
-        snake.setDirection(right);
+        if (snake.getDirection() != left)
+        {
+            snake.setDirection(right);
+        }
         break;
     }
     }
-    
 }
 
 void SnakeGame::updateState()
@@ -82,7 +99,17 @@ void SnakeGame::updateState()
         itemPoison = new ItemPoison(y, x);
         board.add(*itemPoison);
     }
-
+    // 게이트 생성
+    if (gateA == nullptr && gateB == nullptr)
+    {
+        int y, x;
+        board.getWallCoordinates(y, x);
+        gateA = new Gate(y, x);
+        board.getWallCoordinates(y, x);
+        gateB = new Gate(y, x);
+        board.add(*gateA);
+        board.add(*gateB);
+    }
     SnakePiece next = snake.nextHead();
     // 아이템이 아닌 곳을 다니는 경우
     if (next.getX() != item->getX() || next.getY() != item->getY())
@@ -108,6 +135,27 @@ void SnakeGame::updateState()
         delete itemPoison;
         itemPoison = nullptr;
     }
+    // 게이트 통과 구현 방향조절 해줘야함
+    if (mvwinch(board.getBoardWin(), next.getY(), next.getX()) == 'O') 
+    {
+        // A -> B로
+        if (next.getX() == gateA->getX() && next.getY() == gateA->getY())
+        {
+            next.setX(gateB->getX());
+            next.setY(gateB->getY());
+            board.add(next);
+        }
+        else if (next.getX() == gateB->getX() && next.getY() == gateB->getY())
+        {
+            next.setX(gateA->getX());
+            next.setY(gateA->getY());
+            board.add(next);
+        }
+    }
+
+
+
+
 
     // 헤드가 몸에 박았을 경우에 대한 처리
     // 헤드를 제외한 덱이 0이되는 경우가 발생할 수 있음 , 몸길이가 3미만 게임오버
@@ -125,11 +173,14 @@ void SnakeGame::updateState()
         if (next.getX() == piece.getX() && next.getY() == piece.getY()) 
         {
             gameOver = true;
-            //return;
         }
     }
-    // 헤드가 벽에 박았을 경우 >> 벽 구현이 필요함
-
+    // 헤드가 벽에 박았을 경우
+    if (mvwinch(board.getBoardWin(), next.getY(), next.getX()) == 'X') 
+    {
+        next.setIcon('X');
+        gameOver = true;
+    }
     // 5초마다 아이템이 생겼다 사라짐
     if (item != nullptr && difftime(curTime, item->saveTime) >= 5.0) // difftime의 반환형은 double이다
     {

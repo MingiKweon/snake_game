@@ -8,16 +8,18 @@
 #include "Board.hpp"
 #include "Drawable.hpp"
 #include "Item.hpp"
-#include "Empty.hpp"
+#include "Map.hpp"
 #include "Snake.hpp"
 
 
 class SnakeGame
 {
-
+private:
     Board board;
     Item *item;
     ItemPoison *itemPoison;
+    Gate *gateA;
+    Gate *gateB;
     Snake snake;
     bool gameOver;
 public:
