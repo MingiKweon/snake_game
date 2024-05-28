@@ -2,7 +2,7 @@
 #include <ncurses.h>
 #include "Board.hpp"
 #include "SnakeGame.hpp"
-#include "Drawable.hpp"
+#include "Pointer.hpp"
 
 
 #define BOARD_DIM 17
@@ -23,11 +23,11 @@ int main(){
 
     while(!game.isOver())
     {
-        game.input();
+        game.input(); // 값 입력
 
-        game.updateState();
+        game.updateState(); // 게임 진행부
         
-        game.redraw();
+        game.redraw(); // 갱신
     }
     getch(); // key 가 입력되기 전까지 대기할 수 있도록 해줌
     endwin();

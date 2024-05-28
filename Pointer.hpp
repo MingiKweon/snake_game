@@ -1,11 +1,11 @@
 #include <ncurses.h>
-#ifndef __DRAWABLE__
-#define __DRAWABLE__
-class Drawable
+#ifndef __POINTER__
+#define __POINTER__
+class Pointer
 {
 public:
-    Drawable();
-    Drawable(int y, int x, chtype ch);
+    Pointer();
+    Pointer(int y, int x, chtype ch);
     int getX();
     int getY();
     void setX(int x);

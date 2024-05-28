@@ -18,6 +18,7 @@ Snake::Snake()
     }
 void Snake::addPiece(SnakePiece piece)
     {
+        piece.setIcon('#');
         prev_pieces.push_back(piece);
     }
 void Snake::removePiece()

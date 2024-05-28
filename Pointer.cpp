@@ -1,39 +1,39 @@
 #include <ncurses.h>
-#include "Drawable.hpp"
+#include "Pointer.hpp"
 
-Drawable::Drawable()
+Pointer::Pointer()
     {
         y = 0;
         x = 0;
         icon = ' ';
     }
-Drawable::Drawable(int y, int x, chtype ch)
+Pointer::Pointer(int y, int x, chtype ch)
     {
         this->y = y;
         this->x = x;
         this->icon = ch;
     }
-int Drawable::getX()
+int Pointer::getX()
     {
         return x;
     }
-int Drawable::getY()
+int Pointer::getY()
     {
         return y;
     }
-void Drawable::setX(int x)
+void Pointer::setX(int x)
 {
     this->x = x;
 }
-void Drawable::setY(int y)
+void Pointer::setY(int y)
 {
     this->y = y;
 }
-void Drawable::setIcon(chtype ch)
+void Pointer::setIcon(chtype ch)
     {
         icon = ch;
     }
-chtype Drawable::getIcon()
+chtype Pointer::getIcon()
     {
         return icon;
     }

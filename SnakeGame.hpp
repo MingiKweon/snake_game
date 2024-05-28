@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #include "Board.hpp"
-#include "Drawable.hpp"
+#include "Pointer.hpp"
 #include "Item.hpp"
 #include "Map.hpp"
 #include "Snake.hpp"
@@ -22,6 +22,7 @@ private:
     Gate *gateB;
     Snake snake;
     bool gameOver;
+    int score = 0;
 public:
     SnakeGame(int height, int width);
     ~SnakeGame();
@@ -30,6 +31,7 @@ public:
     void updateState();
     void redraw();
     bool isOver();
+    bool isVaildGate(SnakePiece& next);
 };
 
 #endif

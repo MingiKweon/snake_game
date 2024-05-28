@@ -1,7 +1,7 @@
 #ifndef __BOARD__
 #define __BOARD__
 #include <ncurses.h>
-#include "Drawable.hpp"
+#include "Pointer.hpp"
 #include "Map.hpp"
 #include <vector>
 #include <cstdlib>
@@ -14,7 +14,7 @@ public:
     Board(int height, int width); // 생성자
     void initialize();
     void drawMap();
-    void add(Drawable drawable);
+    void add(Pointer pointer);
     void clear();
     void refresh();
     int getInput();

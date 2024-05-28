@@ -1,7 +1,7 @@
 #ifndef __SNAKE__
 #define __SNAKE__
 #include <ncurses.h>
-#include "Drawable.hpp"
+#include "Pointer.hpp"
 #include <deque>
 
 
@@ -10,7 +10,7 @@ enum Direction
     up, down, left, right
 };
 
-class SnakePiece : public Drawable
+class SnakePiece : public Pointer
 {
 public:
     SnakePiece();

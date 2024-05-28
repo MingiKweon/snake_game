@@ -22,7 +22,7 @@ void Board::initialize()
     }
 void Board::drawMap() // 맵 구현부
 {
-    int (*map)[42] = mapData.getMap(stage);
+    int (*map)[42] = mapData.getMap(1);
     for(int i = 0; i < 21; i++) 
     {
         for(int j = 0; j < 42; j++) {
@@ -44,9 +44,9 @@ void Board::drawMap() // 맵 구현부
         }
     }
 }
-void Board::add(Drawable drawable)
+void Board::add(Pointer pointer)
 {
-    addAt(drawable.getY(), drawable.getX(), drawable.getIcon());
+    addAt(pointer.getY(), pointer.getX(), pointer.getIcon());
 }
  void Board::clear()
     {
