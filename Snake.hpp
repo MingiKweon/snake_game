@@ -4,7 +4,6 @@
 #include "Pointer.hpp"
 #include <deque>
 
-
 enum Direction
 {
     up, down, left, right
@@ -20,8 +19,8 @@ public:
 
 class Snake 
 {
-std::deque<SnakePiece> prev_pieces;
-Direction cur_direction;
+std::deque<SnakePiece> prevPieces;
+Direction curDirection;
 public:
     Snake();
     void addPiece(SnakePiece piece);
@@ -30,6 +29,7 @@ public:
     SnakePiece tail();
     SnakePiece head();
     Direction getDirection();
+    void setDirection(int i);
     void setDirection(Direction d);
     SnakePiece nextHead();
 };

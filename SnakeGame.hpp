@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <ctime>
 #include <stdlib.h>
+#include <utility>
 
 #include "Board.hpp"
 #include "Pointer.hpp"
@@ -23,6 +24,7 @@ private:
     Snake snake;
     bool gameOver;
     int score = 0;
+    std::pair<int, int> p;
 public:
     SnakeGame(int height, int width);
     ~SnakeGame();
@@ -31,7 +33,8 @@ public:
     void updateState();
     void redraw();
     bool isOver();
-    bool isVaildGate(SnakePiece& next);
+    void moveGateAtoB(SnakePiece& next);
+    void moveGateBtoA(SnakePiece& next);
 };
 
 #endif

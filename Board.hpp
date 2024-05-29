@@ -5,7 +5,7 @@
 #include "Map.hpp"
 #include <vector>
 #include <cstdlib>
-
+#include <string>
 
 class Board
 {
@@ -18,12 +18,19 @@ public:
     void clear();
     void refresh();
     int getInput();
-    void addAt(int y, int x, char ch);
+    void addMap(int y, int x, char ch);
+    void updateScore(int score);
+    void updateMission(int y, int x, char ch);
     void getEmptyCoordinates(int& y, int& x);
     void getWallCoordinates(int& y, int& x);
     WINDOW* getBoardWin();
+    WINDOW* getScoreWin();
+    WINDOW* getMissionWin();
 private:
     WINDOW* board_win;
+    WINDOW* score_win;
+    WINDOW* mission_win;
+        
     Map mapData;
     int (*map)[42];
     int stage = 0; // 스테이지 불러오는 변수

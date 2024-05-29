@@ -95,9 +95,9 @@ void SnakeGame::updateState()
         int y, x;
         board.getWallCoordinates(y, x);
         gateA = new Gate(y, x);
+        board.add(*gateA);
         board.getWallCoordinates(y, x);
         gateB = new Gate(y, x);
-        board.add(*gateA);
         board.add(*gateB);
     }
     SnakePiece next = snake.nextHead();
@@ -114,6 +114,7 @@ void SnakeGame::updateState()
     {
         next.setIcon('*');
         score += 100; // 점수
+        board.updateScore(score);
         delete item;
         item = nullptr;
     }
@@ -134,17 +135,27 @@ void SnakeGame::updateState()
         // A -> B로
         if (next.getX() == gateA->getX() && next.getY() == gateA->getY())
         {
-            next.setX(gateB->getX());
-            next.setY(gateB->getY());
-            board.add(next);
+            moveGateAtoB(next);
+            //board.add(next);
         }// B -> A로
         else if (next.getX() == gateB->getX() && next.getY() == gateB->getY())
         {
-            next.setX(gateA->getX());
-            next.setY(gateA->getY());
-            board.add(next);
+            moveGateBtoA(next);
+            //board.add(next);
         }
+        // 다 통과하고 나서 되야함 >> snake 꼬리의 좌표가 게이트 출구와 일치한 경우로 판단  
     }
+    if (snake.tail().getY() == p.first && snake.tail().getX() == p.second)
+        {
+            gateA->setIcon('X');
+            gateB->setIcon('X');
+            board.add(*gateA);
+            board.add(*gateB);
+            gateA = nullptr;
+            gateB = nullptr;
+            delete gateA;
+            delete gateB;
+        }
 
     // 헤드가 몸에 박았을 경우에 대한 처리
     // 헤드를 제외한 덱이 0이되는 경우가 발생할 수 있음 , 몸길이가 3미만 게임오버
@@ -155,7 +166,6 @@ void SnakeGame::updateState()
         gameOver = true;
         snake.addPiece(next);
         board.add(next);
-
     }
 
     for (auto& piece : pieces) {
@@ -198,11 +208,171 @@ void SnakeGame::updateState()
         board.add(body);
     }
 }
-// 게이트가 나가는 곳이 가능한 곳인지 판별한다
-bool SnakeGame::isVaildGate(SnakePiece& next)
-{
+// 게이트가 나가는 곳이 가능한 곳인지 판별 후 가능한 곳의 좌표로 세팅해준다
+void SnakeGame::moveGateAtoB(SnakePiece& next)
+{   // 상하좌우
+    if (snake.getDirection() == up)
+    {
+        int dxUp[4] = {0, 1, -1, 0}; // 상 우 좌 하
+        int dyUp[4] = {-1, 0, 0, 1};
+        int returndir[4] = {0, 3, 2, 1};
+        for (int i = 0; i < 4; i++) // 상하좌우 4번만 탐색하면 된다
+        {
+            int dy = gateB->getY()+dyUp[i];
+            int dx = gateB->getX()+dxUp[i];
+            if (mvwinch(board.getBoardWin(), dy, dx) == ' ')
+            {
+                next.setY(dy);
+                next.setX(dx);
+                snake.setDirection(returndir[i]);
+                p.first = dy;
+                p.second = dx;
+            }  
+        }
+    }
+
+    if (snake.getDirection() == down)
+    {
+        int dxDown[4] = {0, -1, 1, 0}; // 하 좌 우 상
+        int dyDown[4] = {1, 0, 0 ,-1};
+        int returndir[4] = {1, 2, 3, 0};
+        for (int i = 0; i < 4; i++)
+        {
+            int dy = gateB->getY()+dyDown[i];
+            int dx = gateB->getX()+dxDown[i];
+            if (mvwinch(board.getBoardWin(), dy, dx) == ' ')
+            {
+                next.setY(dy);
+                next.setX(dx);
+                snake.setDirection(returndir[i]);
+                p.first = dy;
+                p.second = dx;
+            }   
+        }
+    }
+
+    if (snake.getDirection() == left)
+    {
+        int dxLeft[4] = {-1, 0, 0, 1}; // 좌 상 하 우
+        int dyLeft[4] = {0, -1, 1, 0};
+        int returndir[4] = {2, 0, 1, 3};
+        for (int i = 0; i < 4; i++)
+        {
+            int dy = gateB->getY()+dyLeft[i];
+            int dx = gateB->getX()+dxLeft[i];
+            if (mvwinch(board.getBoardWin(), dy, dx) == ' ')
+            {
+                next.setY(dy);
+                next.setX(dx);
+                snake.setDirection(returndir[i]);
+                p.first = dy;
+                p.second = dx;
+            }   
+        }
+    }
     
-    return true;   
+    if (snake.getDirection() == right)
+    {
+    
+        int dxRight[4] = {1, 0, 0, -1}; // 우 하 상 좌
+        int dyRight[4] = {0, 1, -1, 0};
+        int returndir[4] = {3, 1, 0, 2};
+        for (int i = 0; i < 4; i++)
+        {
+            int dy = gateB->getY()+dyRight[i];
+            int dx = gateB->getX()+dxRight[i];
+            if (mvwinch(board.getBoardWin(), dy, dx) == ' ')
+            {
+                next.setY(dy);
+                next.setX(dx);
+                snake.setDirection(returndir[i]);
+                p.first = dy;
+                p.second = dx;
+            }   
+        }
+    }
+}
+void SnakeGame::moveGateBtoA(SnakePiece& next)
+{  
+    if (snake.getDirection() == up)
+    {
+        int dxUp[4] = {0, 1, -1, 0}; // 상 우 좌 하
+        int dyUp[4] = {-1, 0, 0, 1};
+        int returndir[4] = {0, 3, 2, 1};
+        for (int i = 0; i < 4; i++) // 상하좌우 4번만 탐색하면 된다
+        {
+            int dy = gateA->getY()+dyUp[i];
+            int dx = gateA->getX()+dxUp[i];
+            if (mvwinch(board.getBoardWin(), dy, dx) == ' ')
+            {
+                next.setY(dy);
+                next.setX(dx);
+                snake.setDirection(returndir[i]);
+                p.first = dy;
+                p.second = dx;
+            }   
+        }
+    }
+
+    if (snake.getDirection() == down)
+    {
+        int dxDown[4] = {0, -1, 1, 0}; // 하 좌 우 상
+        int dyDown[4] = {1, 0, 0 ,-1};
+        int returndir[4] = {1, 2, 3, 0};
+        for (int i = 0; i < 4; i++)
+        {
+            int dy = gateA->getY()+dyDown[i];
+            int dx = gateA->getX()+dxDown[i];
+            if (mvwinch(board.getBoardWin(), dy, dx) == ' ')
+            {
+                next.setY(dy);
+                next.setX(dx);
+                snake.setDirection(returndir[i]);
+                p.first = dy;
+                p.second = dx;
+            }   
+        }
+    }
+
+    if (snake.getDirection() == left)
+    {
+        int dxLeft[4] = {-1, 0, 0, 1}; // 좌 상 하 우
+        int dyLeft[4] = {0, -1, 1, 0};
+        int returndir[4] = {2, 0, 1, 3};
+        for (int i = 0; i < 4; i++)
+        {
+            int dy = gateA->getY()+dyLeft[i];
+            int dx = gateA->getX()+dxLeft[i];
+            if (mvwinch(board.getBoardWin(), dy, dx) == ' ')
+            {
+                next.setY(dy);
+                next.setX(dx);
+                snake.setDirection(returndir[i]);
+                p.first = dy;
+                p.second = dx;
+            }   
+        }
+    }
+    
+    if (snake.getDirection() == right)
+    {
+        int dxRight[4] = {1, 0, 0, -1}; // 우 하 상 좌
+        int dyRight[4] = {0, 1, -1, 0};
+        int returndir[4] = {3, 1, 0, 2};
+        for (int i = 0; i < 4; i++)
+        {
+            int dy = gateA->getY()+dyRight[i];
+            int dx = gateA->getX()+dxRight[i];
+            if (mvwinch(board.getBoardWin(), dy, dx) == ' ')
+            {
+                next.setY(dy);
+                next.setX(dx);
+                snake.setDirection(returndir[i]);
+                p.first = dy;
+                p.second = dx;    
+            }   
+        }
+    }
 }
 void SnakeGame::redraw()
 {

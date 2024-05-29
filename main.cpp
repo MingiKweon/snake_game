@@ -5,9 +5,8 @@
 #include "Pointer.hpp"
 
 
-#define BOARD_DIM 17
-#define BOARD_ROWS BOARD_DIM
-#define BOARD_COLS BOARD_DIM * 2.5
+#define BOARD_ROWS 17
+#define BOARD_COLS 17 * 2.5
 
 
 using namespace std;

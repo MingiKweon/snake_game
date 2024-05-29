@@ -14,44 +14,48 @@ SnakePiece::SnakePiece(int y, int x)
     }
 Snake::Snake()
     {
-        cur_direction = down;
+        curDirection = down;
     }
 void Snake::addPiece(SnakePiece piece)
     {
         piece.setIcon('#');
-        prev_pieces.push_back(piece);
+        prevPieces.push_back(piece);
     }
 void Snake::removePiece()
     {
-        prev_pieces.pop_front();
+        prevPieces.pop_front();
     }
 // 헤드를 제외한 덱이 0인 경우에 문제가 발생함
 std::deque<SnakePiece> Snake::getPiece() // 머리를 제외한 배열을 복사해서 반환
 {
-    std::deque<SnakePiece> copyPieces(prev_pieces.begin(), prev_pieces.end() - 1);
+    std::deque<SnakePiece> copyPieces(prevPieces.begin(), prevPieces.end() - 1);
     return copyPieces;
 }
 SnakePiece Snake::tail()
     {
-        return prev_pieces.front();
+        return prevPieces.front();
     }
 SnakePiece Snake::head()
     {
-        return prev_pieces.back();
+        return prevPieces.back();
     }
 Direction Snake::getDirection()
     {
-        return cur_direction;
+        return curDirection;
     }
 void Snake::setDirection(Direction d)
     {
-        cur_direction = d;
+        curDirection = d;
     }
+void Snake::setDirection(int i)
+{
+    curDirection = (Direction)i;
+}
 SnakePiece Snake::nextHead()
     {
         int row = head().getY();
         int col = head().getX();
-        switch(cur_direction)
+        switch(curDirection)
         {
             case down:
                 row++;
