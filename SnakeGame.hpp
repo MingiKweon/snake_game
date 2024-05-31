@@ -17,24 +17,31 @@ class SnakeGame
 {
 private:
     Board board;
-    Item *item;
+    ItemGrow *itemGrow;
+    ItemSpeed *itemSpeed;
     ItemPoison *itemPoison;
     Gate *gateA;
     Gate *gateB;
     Snake snake;
     bool gameOver;
-    //int score = 0; // scoreBoard part
     int growNumber = 0;     // missionBoard part
     int poisonNumber = 0;
     int gateNumber = 0;
+    int maxSnake = 0;
     int stage = 0;
+    int score = 0;
+    //int randomNumA = rand() % 5 + 2;
+    int randomNumA = rand() % 2 + 1;
+    int randomNumB = rand() % 2 + 1;
+    int randomNumC = rand() % 2 + 1;
+    int randomNumD = rand() % 5 + 2;
     std::pair<int, int> p;
 public:
-    int score = 0; // scoreBoard part
     SnakeGame(int height, int width);
     ~SnakeGame();
     void initialize();
     void stageClear();
+    bool missionClear();
     void input();
     void updateState();
     void redraw();
@@ -42,6 +49,8 @@ public:
     bool isOver();
     void moveGateAtoB(SnakePiece& next);
     void moveGateBtoA(SnakePiece& next);
+    WINDOW* getBoardWin();
+    void gameRefresh();
 };
 
 #endif

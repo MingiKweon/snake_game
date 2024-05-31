@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 int main(){
     initscr();
     refresh();
@@ -28,11 +27,15 @@ int main(){
         game.updateState(); // 게임 진행부
         game.redraw(); // 갱신
     }
+    int height, width;
+    getmaxyx(game.getBoardWin(), height, width);
+    if (game.getStage() == 4) mvwprintw(game.getBoardWin(), height / 2 - 1, (width - 8) / 2, "Game Clear");
+    game.gameRefresh();
     getch(); // key 가 입력되기 전까지 대기할 수 있도록 해줌
     endwin();
     
     return 0;
 }
-// 게임의 총 순환을 관리하는 부분으로 사용되어야 해 보임
-// 게이트 item을 구현하되 그 객체들의 생성, 소멸에 딜레이가 있어야한다
-// 새로운 아이템 종류로는 먹으면 게임의 업데이팅이 더 빨라지도록 세팅
+// 새로운 아이템 종류로는 먹으면 게임의 업데이팅이 더 빨라지도록 세팅 >> wtimeout만 수정하면 됨 but
+// map 제작, mission 구현
+// 뱀 상태

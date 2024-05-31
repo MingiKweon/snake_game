@@ -35,6 +35,10 @@ std::deque<SnakePiece> Snake::getPiece() // 머리를 제외한 배열을 복사
     std::deque<SnakePiece> copyPieces(prevPieces.begin(), prevPieces.end() - 1);
     return copyPieces;
 }
+int Snake::getSnakeSize()
+{
+    return prevPieces.size() -1; // 헤드의 길이는 제외한다
+}
 SnakePiece Snake::tail()
     {
         return prevPieces.front();

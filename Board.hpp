@@ -22,12 +22,16 @@ public:
     void updateScoreGrow(int score);
     void updateMissionGrow(int score);
     void updateScorePoison(int poison);
+    void updateScoreCurSnake(int snake);
+    void updateMissionCurSnake(int snake);
+    void updateScoreMaxSnake(int snake);
     void updateScoreGate(int gate);
     void updateMissionPoison(int poison);
     void updateMissionGate(int gate);
     void getEmptyCoordinates(int& y, int& x);
     void getWallCoordinates(int& y, int& x);
     void setStage(int a);
+    int getStage();
     WINDOW* getBoardWin();
     WINDOW* getScoreWin();
     WINDOW* getMissionWin();

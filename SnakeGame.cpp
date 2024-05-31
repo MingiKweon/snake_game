@@ -2,14 +2,15 @@
 #include <ctime>
 #include <string>
 
-SnakeGame::SnakeGame(int height, int width) : board(height, width), item(nullptr), gameOver(false)
+SnakeGame::SnakeGame(int height, int width) : board(height, width), itemGrow(nullptr), gameOver(false)
 {
     initialize(); // 보드 객체를 만들어준다.
 }
 
 SnakeGame::~SnakeGame()
 {
-    delete item;
+    delete itemSpeed;
+    delete itemGrow;
     delete itemPoison;
     delete gateA;
     delete gateB;
@@ -21,9 +22,20 @@ void SnakeGame::initialize()
     gateA = nullptr;
     gateB = nullptr;
     itemPoison = nullptr;
-    item = nullptr;
+    itemGrow = nullptr;
+    itemSpeed = nullptr;
     gameOver = false;
+    maxSnake = snake.getSnakeSize();
     srand(time(NULL));
+    
+    board.updateScoreGrow(0);
+    board.updateScorePoison(0);
+    board.updateScoreGate(0);
+    
+    board.updateMissionGrow(randomNumA);
+    board.updateMissionPoison(randomNumB);
+    board.updateMissionGate(randomNumC);
+    board.updateMissionCurSnake(randomNumD);
 
     board.initialize();
     board.drawMap();
@@ -44,22 +56,24 @@ void SnakeGame::initialize()
     next.setIcon('*');
     board.add(next);
     snake.addPiece(next);
+    board.updateScoreCurSnake(snake.getSnakeSize());
+    board.updateScoreMaxSnake(snake.getSnakeSize());
 }
 // 꾹 누르게 되면 값은 변화하지 않는게 맞는데 단 input의 빠르게 많이 반복하여
 // update를 빠르고 많이 불러오게 되는 문제로 인해 뱀이 계속해서 움직임
 void SnakeGame::input()
 {
     int input = board.getInput();
+    
     if (input != ERR)
-    {
+    {   
     switch (input)
-    {
+    { 
     case KEY_UP: // 반대방향 눌리지 않아야함, 같은 방향을 누를 수 없어야함
         if (snake.getDirection() != down) snake.setDirection(up);
         break;
     case KEY_DOWN:
         if (snake.getDirection() != up) snake.setDirection(down);
-
         break;
     case KEY_LEFT:
         if (snake.getDirection() != right) snake.setDirection(left);
@@ -74,15 +88,14 @@ void SnakeGame::input()
 void SnakeGame::updateState()
 {
     time_t curTime = time(nullptr); // 현재 시간
-    // 아이템 생성
-    if (item == nullptr)
+    // 성장 아이템 생성
+    if (itemGrow == nullptr)
     {
         int y, x;
         board.getEmptyCoordinates(y, x);
-        item = new Item(y, x);
-        board.add(*item);
+        itemGrow = new ItemGrow(y, x);
+        board.add(*itemGrow);
     }
-    
     // 독 아이템 생성
     if (itemPoison == nullptr)
     {
@@ -90,6 +103,14 @@ void SnakeGame::updateState()
         board.getEmptyCoordinates(y, x);
         itemPoison = new ItemPoison(y, x);
         board.add(*itemPoison);
+    }
+    // 속도 아이템 생성
+    if (itemSpeed == nullptr)
+    {
+        int y, x;
+        board.getEmptyCoordinates(y, x);
+        itemSpeed = new ItemSpeed(y, x);
+        board.add(*itemSpeed);
     }
     // 게이트 생성
     if (gateA == nullptr && gateB == nullptr)
@@ -104,36 +125,58 @@ void SnakeGame::updateState()
     }
     SnakePiece next = snake.nextHead();
     // 아이템이 아닌 곳을 다니는 경우
-    if (next.getX() != item->getX() || next.getY() != item->getY())
+    if (next.getX() != itemGrow->getX() || next.getY() != itemGrow->getY())
     {
         int emptyRow = snake.tail().getY();
         int emptyCol = snake.tail().getX();
         next.setIcon('*');
         board.add(Empty(emptyRow, emptyCol));
         snake.removePiece();
+        snake.addPiece(next);
+        board.add(next);
     }
     else
     {
         next.setIcon('*');
-        score += 100; // 점수
         growNumber += 1;
-        board.updateScoreGrow(score);
-        board.updateMissionGrow(growNumber);
-        delete item;
-        item = nullptr;
+        snake.addPiece(next);
+        board.add(next);
+        board.updateScoreCurSnake(snake.getSnakeSize());
+        board.updateScoreGrow(growNumber);
+        //board.updateMissionGrow(growNumber);
+        delete itemGrow;
+        itemGrow = nullptr;
+        if (snake.getSnakeSize() > maxSnake)
+        {
+            maxSnake = snake.getSnakeSize();
+            board.updateScoreMaxSnake(maxSnake);
+        }
     }
     // 독을 먹은 경우
     if (next.getX() == itemPoison->getX() && next.getY() == itemPoison->getY())
     {
         poisonNumber += 1;
         board.updateScorePoison(poisonNumber);
-        board.updateMissionPoison(poisonNumber);
+        //board.updateMissionPoison(poisonNumber);
         int emptyRow = snake.tail().getY();
         int emptyCol = snake.tail().getX();
         board.add(Empty(emptyRow, emptyCol));
         snake.removePiece();
+        board.updateScoreCurSnake(snake.getSnakeSize());
         delete itemPoison;
         itemPoison = nullptr;
+    }
+    // 속도를 먹은 경우
+    if (next.getX() == itemSpeed->getX() && next.getY() == itemSpeed->getY())
+    {
+        int emptyRow = snake.tail().getY();
+        int emptyCol = snake.tail().getX();
+        board.add(Empty(emptyRow, emptyCol));
+        int randomSpeed = rand() % 500 + 1;
+        wtimeout(getBoardWin(), randomSpeed); // 속도 변화를 1~ 500로
+        
+        delete itemSpeed;
+        itemSpeed = nullptr;
     }
     // 게이트 통과 구현 방향조절 해줘야함 -> 미구현, tail이 통과한 후엔 두 게이트를 nullptr로 만들고 벽을 다시 x로 해야함 >> 구현 완료
     if (mvwinch(board.getBoardWin(), next.getY(), next.getX()) == 'O') 
@@ -142,17 +185,19 @@ void SnakeGame::updateState()
         if (next.getX() == gateA->getX() && next.getY() == gateA->getY())
         {
             moveGateAtoB(next);
-            //board.add(next);
         }// B -> A로
         else if (next.getX() == gateB->getX() && next.getY() == gateB->getY())
         {
             moveGateBtoA(next);
-            //board.add(next);
         }
-        // 다 통과하고 나서 되야함 >> snake 꼬리의 좌표가 게이트 출구와 일치한 경우로 판단  
+          
     }
+    // 다 통과하고 나서 되야함 >> snake 꼬리의 좌표가 게이트 출구와 일치한 경우로 판단
     if (snake.tail().getY() == p.first && snake.tail().getX() == p.second)
         {
+            gateNumber += 1;
+            board.updateScoreGate(gateNumber);
+            //board.updateMissionGate(gateNumber);
             gateA->setIcon('X');
             gateB->setIcon('X');
             board.add(*gateA);
@@ -187,13 +232,13 @@ void SnakeGame::updateState()
         gameOver = true;
     }
     // 5초마다 아이템이 생겼다 사라짐
-    if (item != nullptr && difftime(curTime, item->saveTime) >= 5.0) // difftime의 반환형은 double이다
+    if (itemGrow != nullptr && difftime(curTime, itemGrow->saveTime) >= 5.0) // difftime의 반환형은 double이다
     {
-        int itemRow = item->getY();
-        int itemCol = item->getX();
-        board.add(Empty(itemRow, itemCol));
-        delete item;
-        item = nullptr;
+        int itemGrowRow = itemGrow->getY();
+        int itemGrowCol = itemGrow->getX();
+        board.add(Empty(itemGrowRow, itemGrowCol));
+        delete itemGrow;
+        itemGrow = nullptr;
     }
     // 위와 동일 독 아이템
     if (itemPoison != nullptr && difftime(curTime, itemPoison->saveTime) >= 5.0) // difftime의 반환형은 double이다
@@ -204,9 +249,17 @@ void SnakeGame::updateState()
         delete itemPoison;
         itemPoison = nullptr;
     }
-
-    snake.addPiece(next);
-    board.add(next);
+    // 위와 동일 속도 아이템
+    if (itemSpeed != nullptr && difftime(curTime, itemSpeed->saveTime) >= 5.0)
+    {
+        int itemSpeedRow = itemSpeed->getY();
+        int itemSpeedCol = itemSpeed->getX();
+        board.add(Empty(itemSpeedRow, itemSpeedCol));
+        delete itemSpeed;
+        itemSpeed = nullptr;
+    }
+    // snake.addPiece(next);
+    // board.add(next);
     if (snake.getPiece().size() > 1) 
     {
         SnakePiece body = snake.getPiece().back();
@@ -383,22 +436,29 @@ void SnakeGame::moveGateBtoA(SnakePiece& next)
 
 void SnakeGame::stageClear() // 할당 및 값 해제
 {
+    wtimeout(getBoardWin(), 400);
     growNumber = 0;
     poisonNumber = 0;
     gateNumber = 0;
     score = 0;
-    // 0으로 하는게 맞는가 NULL로 하는게 맞는가 
     board.updateScoreGrow(score);
     board.updateMissionPoison(poisonNumber);
     board.updateMissionGrow(growNumber);
-    delete item;
+    board.updateScoreCurSnake(2); // 처음 길이는 항상 2임
+    delete itemGrow;
     delete itemPoison;
+    delete itemSpeed;
     delete gateA;
     delete gateB;
     snake.pieceClear();
     board.setStage(++stage);
     initialize();
 
+}
+bool SnakeGame::missionClear()
+{
+    if (randomNumA <= growNumber && randomNumB <= poisonNumber && randomNumC <= gateNumber && randomNumD <= maxSnake) return true;
+    return false;
 }
 void SnakeGame::redraw()
 {
@@ -409,14 +469,24 @@ void SnakeGame::redraw()
         mvwprintw(board.getBoardWin(), height / 2 - 1, (width - 8) / 2, "Game Over");
     }
 
-    if (score > 100)
+    if (missionClear() && board.getStage() < 4)
     {
         getmaxyx(board.getBoardWin(), height, width);
         mvwprintw(board.getBoardWin(), height / 2 - 1, (width - 8) / 2, "Stage Clear");
         board.refresh();
-        napms(1000);
+        napms(1500);
+        if (board.getStage() == 3)
+        {
+            ++stage;
+            return ;
+        }
         stageClear();
+        return ;
     }
+    board.refresh();
+}
+void SnakeGame::gameRefresh()
+{
     board.refresh();
 }
 int SnakeGame::getStage()
@@ -426,4 +496,7 @@ int SnakeGame::getStage()
 bool SnakeGame::isOver()
 {
     return gameOver;
+}
+WINDOW* SnakeGame::getBoardWin() {
+    return board.getBoardWin();
 }

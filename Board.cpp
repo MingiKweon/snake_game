@@ -75,8 +75,6 @@ void Board::add(Pointer pointer)
  void Board::clear()
     {
         wclear(board_win);
-        //wclear(score_win);
-        //wclear(mission_win);
         drawMap();
     }
 void Board::refresh()
@@ -107,6 +105,16 @@ void Board::addMap(int y, int x, char ch)
 {
     mvwaddch(board_win, y, x, ch);
 }
+void Board::updateScoreCurSnake(int snake)
+{
+    mvwprintw(score_win, 3, 17, "%d", snake); // y 좌표 일치
+    wrefresh(score_win);
+}
+void Board::updateScoreMaxSnake(int snake)
+{
+    mvwprintw(score_win, 3, 20, "%d", snake); // y 좌표 일치
+    wrefresh(score_win);
+}
 void Board::updateScoreGrow(int score)
 {
     mvwprintw(score_win, 5, 17, "%d", score); // y 좌표 일치
@@ -121,6 +129,11 @@ void Board::updateScoreGate(int gate)
 {
     mvwprintw(score_win, 9, 17, "%d", gate); // y 좌표 일치
     wrefresh(score_win);
+}
+void Board::updateMissionCurSnake(int snake)
+{
+    mvwprintw(mission_win, 3, 17, "%d", snake); // y 좌표 일치
+    wrefresh(mission_win);
 }
 void Board::updateMissionGrow(int score)
 {
@@ -137,9 +150,14 @@ void Board::updateMissionGate(int gate)
     mvwprintw(mission_win, 9, 17, "%d", gate); // y 좌표 일치
     wrefresh(mission_win);
 }
+
 void Board::setStage(int a)
 {
     stage = a;
+}
+int Board::getStage()
+{
+    return stage;
 }
 WINDOW* Board::getBoardWin() {
     return board_win;

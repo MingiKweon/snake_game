@@ -1,6 +1,6 @@
 #include "Item.hpp"
 
-Item::Item(int y, int x)
+ItemGrow::ItemGrow(int y, int x)
     {
         this->y = y;
         this->x = x;
@@ -13,6 +13,13 @@ ItemPoison::ItemPoison(int y, int x)
     this->y = y;
     this->x = x;
     this->icon = '$';
+    saveTime = time(nullptr);
+}
+ItemSpeed::ItemSpeed(int y, int x)
+{
+    this->y = y;
+    this->x = x;
+    this->icon = '!';
     saveTime = time(nullptr);
 }
 
