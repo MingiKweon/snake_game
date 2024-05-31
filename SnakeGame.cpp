@@ -17,15 +17,17 @@ SnakeGame::~SnakeGame()
 
 void SnakeGame::initialize()
 {
-    board.drawMap();
+    
     gateA = nullptr;
     gateB = nullptr;
     itemPoison = nullptr;
     item = nullptr;
     gameOver = false;
-    board.initialize();
-    
     srand(time(NULL));
+
+    board.initialize();
+    board.drawMap();
+    
     snake.setDirection(left);
 
     SnakePiece next(10, 35); // 나중에 시작할 좌표를 줘야함
@@ -114,14 +116,18 @@ void SnakeGame::updateState()
     {
         next.setIcon('*');
         score += 100; // 점수
-        board.updateScore(score);
+        growNumber += 1;
+        board.updateScoreGrow(score);
+        board.updateMissionGrow(growNumber);
         delete item;
         item = nullptr;
     }
     // 독을 먹은 경우
     if (next.getX() == itemPoison->getX() && next.getY() == itemPoison->getY())
     {
-        
+        poisonNumber += 1;
+        board.updateScorePoison(poisonNumber);
+        board.updateMissionPoison(poisonNumber);
         int emptyRow = snake.tail().getY();
         int emptyCol = snake.tail().getX();
         board.add(Empty(emptyRow, emptyCol));
@@ -129,7 +135,7 @@ void SnakeGame::updateState()
         delete itemPoison;
         itemPoison = nullptr;
     }
-    // 게이트 통과 구현 방향조절 해줘야함 -> 미구현, tail이 통과한 후엔 두 게이트를 nullptr로 만들고 벽을 다시 x로 해야함
+    // 게이트 통과 구현 방향조절 해줘야함 -> 미구현, tail이 통과한 후엔 두 게이트를 nullptr로 만들고 벽을 다시 x로 해야함 >> 구현 완료
     if (mvwinch(board.getBoardWin(), next.getY(), next.getX()) == 'O') 
     {
         // A -> B로
@@ -374,20 +380,49 @@ void SnakeGame::moveGateBtoA(SnakePiece& next)
         }
     }
 }
+
+void SnakeGame::stageClear() // 할당 및 값 해제
+{
+    growNumber = 0;
+    poisonNumber = 0;
+    gateNumber = 0;
+    score = 0;
+    // 0으로 하는게 맞는가 NULL로 하는게 맞는가 
+    board.updateScoreGrow(score);
+    board.updateMissionPoison(poisonNumber);
+    board.updateMissionGrow(growNumber);
+    delete item;
+    delete itemPoison;
+    delete gateA;
+    delete gateB;
+    snake.pieceClear();
+    board.setStage(++stage);
+    initialize();
+
+}
 void SnakeGame::redraw()
 {
+    int height, width;
     if (gameOver)
     {
-        int height, width;
         getmaxyx(board.getBoardWin(), height, width);
-        std::string gameOverMsg = "Game Over";
-        // c_str 을 재할당 하는 방식으로 사용 불가능
-        // char *gameOverMsg = gameOverMsg.c_str;
-        mvwprintw(board.getBoardWin(), height / 2, (width - gameOverMsg.size()) / 2, "%s", gameOverMsg.c_str());
+        mvwprintw(board.getBoardWin(), height / 2 - 1, (width - 8) / 2, "Game Over");
+    }
+
+    if (score > 100)
+    {
+        getmaxyx(board.getBoardWin(), height, width);
+        mvwprintw(board.getBoardWin(), height / 2 - 1, (width - 8) / 2, "Stage Clear");
+        board.refresh();
+        napms(1000);
+        stageClear();
     }
     board.refresh();
 }
-
+int SnakeGame::getStage()
+{
+    return stage;
+}
 bool SnakeGame::isOver()
 {
     return gameOver;

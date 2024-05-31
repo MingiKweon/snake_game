@@ -19,10 +19,15 @@ public:
     void refresh();
     int getInput();
     void addMap(int y, int x, char ch);
-    void updateScore(int score);
-    void updateMission(int y, int x, char ch);
+    void updateScoreGrow(int score);
+    void updateMissionGrow(int score);
+    void updateScorePoison(int poison);
+    void updateScoreGate(int gate);
+    void updateMissionPoison(int poison);
+    void updateMissionGate(int gate);
     void getEmptyCoordinates(int& y, int& x);
     void getWallCoordinates(int& y, int& x);
+    void setStage(int a);
     WINDOW* getBoardWin();
     WINDOW* getScoreWin();
     WINDOW* getMissionWin();

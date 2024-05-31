@@ -18,14 +18,14 @@ int main(){
 
     noecho();
     curs_set(0); // 커서 미표시
+    // 2중 while로 clear 함수가 호출되면 내부 while문 종료 후 새 객체 생성?
     SnakeGame game(BOARD_ROWS, BOARD_COLS);
 
-    while(!game.isOver())
+    while(!(game.isOver()) && game.getStage() < 4)
     {
         game.input(); // 값 입력
 
         game.updateState(); // 게임 진행부
-        
         game.redraw(); // 갱신
     }
     getch(); // key 가 입력되기 전까지 대기할 수 있도록 해줌

@@ -25,6 +25,10 @@ void Snake::removePiece()
     {
         prevPieces.pop_front();
     }
+void Snake::pieceClear()
+{
+    prevPieces.clear();
+}
 // 헤드를 제외한 덱이 0인 경우에 문제가 발생함
 std::deque<SnakePiece> Snake::getPiece() // 머리를 제외한 배열을 복사해서 반환
 {

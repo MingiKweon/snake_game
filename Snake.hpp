@@ -25,6 +25,7 @@ public:
     Snake();
     void addPiece(SnakePiece piece);
     void removePiece();
+    void pieceClear();
     std::deque<SnakePiece> getPiece(); // 뱀을 인덱스로 접근
     SnakePiece tail();
     SnakePiece head();
