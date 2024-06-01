@@ -31,14 +31,12 @@ public:
 // 빈 공간 관리
 class Empty : public Pointer
 {
-
 public:
     Empty(int y, int x);
 };
 
 class EmptyWall : public Pointer
 {
-
 public:
     EmptyWall(int y, int x);
 };
@@ -47,5 +45,11 @@ class Gate : public Pointer
 {
 public:
     Gate(int y, int x);
+};
+class SuddenWall : public Pointer
+{
+public:
+    SuddenWall(int y, int x);
+    time_t saveTime;
 };
 #endif

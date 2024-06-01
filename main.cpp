@@ -29,13 +29,12 @@ int main(){
     }
     int height, width;
     getmaxyx(game.getBoardWin(), height, width);
-    if (game.getStage() == 4) mvwprintw(game.getBoardWin(), height / 2 - 1, (width - 8) / 2, "Game Clear");
+    if (game.getStage() == 4) mvwprintw(game.getBoardWin(), height / 2 - 1, (width - 8) / 2, "Game Clear!");
     game.gameRefresh();
     getch(); // key 가 입력되기 전까지 대기할 수 있도록 해줌
     endwin();
     
     return 0;
 }
-// 새로운 아이템 종류로는 먹으면 게임의 업데이팅이 더 빨라지도록 세팅 >> wtimeout만 수정하면 됨 but
-// map 제작, mission 구현
-// 뱀 상태
+
+// 시간 뜨게

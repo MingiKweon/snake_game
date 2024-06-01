@@ -1,6 +1,4 @@
 #include "SnakeGame.hpp"
-#include <ctime>
-#include <string>
 
 SnakeGame::SnakeGame(int height, int width) : board(height, width), itemGrow(nullptr), gameOver(false)
 {
@@ -14,35 +12,36 @@ SnakeGame::~SnakeGame()
     delete itemPoison;
     delete gateA;
     delete gateB;
+    delete suddenWall;
 }
 
 void SnakeGame::initialize()
 {
-    
+    srand(time(NULL));
     gateA = nullptr;
     gateB = nullptr;
     itemPoison = nullptr;
     itemGrow = nullptr;
     itemSpeed = nullptr;
+    suddenWall = nullptr;
     gameOver = false;
     maxSnake = snake.getSnakeSize();
-    srand(time(NULL));
     
+    board.initialize();
     board.updateScoreGrow(0);
     board.updateScorePoison(0);
     board.updateScoreGate(0);
     
-    board.updateMissionGrow(randomNumA);
-    board.updateMissionPoison(randomNumB);
-    board.updateMissionGate(randomNumC);
-    board.updateMissionCurSnake(randomNumD);
+    board.updateMissionCurSnake(randomNumA);
+    board.updateMissionGrow(randomNumB);
+    board.updateMissionPoison(randomNumC);
+    board.updateMissionGate(randomNumD);
 
-    board.initialize();
     board.drawMap();
-    
-    snake.setDirection(left);
+    board.drawState();
+    snake.setDirection(up);
 
-    SnakePiece next(10, 35); // 나중에 시작할 좌표를 줘야함
+    SnakePiece next(10, 40); // 나중에 시작할 좌표를 줘야함
     board.add(next);
     snake.addPiece(next);
 
@@ -112,6 +111,14 @@ void SnakeGame::updateState()
         itemSpeed = new ItemSpeed(y, x);
         board.add(*itemSpeed);
     }
+    // 벽 생성
+    if (suddenWall == nullptr)
+    {
+        int y, x;
+        board.getEmptyCoordinates(y, x);
+        suddenWall = new SuddenWall(y, x);
+        board.add(*suddenWall);
+    }
     // 게이트 생성
     if (gateA == nullptr && gateB == nullptr)
     {
@@ -132,25 +139,17 @@ void SnakeGame::updateState()
         next.setIcon('*');
         board.add(Empty(emptyRow, emptyCol));
         snake.removePiece();
-        snake.addPiece(next);
-        board.add(next);
     }
     else
     {
         next.setIcon('*');
         growNumber += 1;
-        snake.addPiece(next);
-        board.add(next);
-        board.updateScoreCurSnake(snake.getSnakeSize());
+        //snake.addPiece(next);
+        //board.add(next);
         board.updateScoreGrow(growNumber);
         //board.updateMissionGrow(growNumber);
         delete itemGrow;
         itemGrow = nullptr;
-        if (snake.getSnakeSize() > maxSnake)
-        {
-            maxSnake = snake.getSnakeSize();
-            board.updateScoreMaxSnake(maxSnake);
-        }
     }
     // 독을 먹은 경우
     if (next.getX() == itemPoison->getX() && next.getY() == itemPoison->getY())
@@ -172,7 +171,7 @@ void SnakeGame::updateState()
         int emptyRow = snake.tail().getY();
         int emptyCol = snake.tail().getX();
         board.add(Empty(emptyRow, emptyCol));
-        int randomSpeed = rand() % 500 + 1;
+        int randomSpeed = rand() % 500 + 200;
         wtimeout(getBoardWin(), randomSpeed); // 속도 변화를 1~ 500로
         
         delete itemSpeed;
@@ -258,8 +257,23 @@ void SnakeGame::updateState()
         delete itemSpeed;
         itemSpeed = nullptr;
     }
-    // snake.addPiece(next);
-    // board.add(next);
+    // 위와 동일 벽
+    if (suddenWall != nullptr && difftime(curTime, suddenWall->saveTime) >= 3.0)
+    {
+        int suddenWallRow = suddenWall->getY();
+        int suddenWallCol = suddenWall->getX();
+        board.add(Empty(suddenWallRow, suddenWallCol));
+        delete suddenWall;
+        suddenWall = nullptr;
+    }
+    snake.addPiece(next);
+    board.add(next);
+    board.updateScoreCurSnake(snake.getSnakeSize());
+        if (snake.getSnakeSize() > maxSnake)
+        {
+            maxSnake = snake.getSnakeSize();
+            board.updateScoreMaxSnake(maxSnake);
+        }
     if (snake.getPiece().size() > 1) 
     {
         SnakePiece body = snake.getPiece().back();
@@ -286,6 +300,7 @@ void SnakeGame::moveGateAtoB(SnakePiece& next)
                 snake.setDirection(returndir[i]);
                 p.first = dy;
                 p.second = dx;
+                break;
             }  
         }
     }
@@ -294,7 +309,7 @@ void SnakeGame::moveGateAtoB(SnakePiece& next)
     {
         int dxDown[4] = {0, -1, 1, 0}; // 하 좌 우 상
         int dyDown[4] = {1, 0, 0 ,-1};
-        int returndir[4] = {1, 2, 3, 0};
+        int returndir[4] = {1, 2, 3, 0}; 
         for (int i = 0; i < 4; i++)
         {
             int dy = gateB->getY()+dyDown[i];
@@ -306,6 +321,7 @@ void SnakeGame::moveGateAtoB(SnakePiece& next)
                 snake.setDirection(returndir[i]);
                 p.first = dy;
                 p.second = dx;
+                break;
             }   
         }
     }
@@ -326,6 +342,7 @@ void SnakeGame::moveGateAtoB(SnakePiece& next)
                 snake.setDirection(returndir[i]);
                 p.first = dy;
                 p.second = dx;
+                break;
             }   
         }
     }
@@ -347,6 +364,7 @@ void SnakeGame::moveGateAtoB(SnakePiece& next)
                 snake.setDirection(returndir[i]);
                 p.first = dy;
                 p.second = dx;
+                break;
             }   
         }
     }
@@ -369,6 +387,7 @@ void SnakeGame::moveGateBtoA(SnakePiece& next)
                 snake.setDirection(returndir[i]);
                 p.first = dy;
                 p.second = dx;
+                break;
             }   
         }
     }
@@ -389,6 +408,7 @@ void SnakeGame::moveGateBtoA(SnakePiece& next)
                 snake.setDirection(returndir[i]);
                 p.first = dy;
                 p.second = dx;
+                break;
             }   
         }
     }
@@ -409,6 +429,7 @@ void SnakeGame::moveGateBtoA(SnakePiece& next)
                 snake.setDirection(returndir[i]);
                 p.first = dy;
                 p.second = dx;
+                break;
             }   
         }
     }
@@ -428,7 +449,8 @@ void SnakeGame::moveGateBtoA(SnakePiece& next)
                 next.setX(dx);
                 snake.setDirection(returndir[i]);
                 p.first = dy;
-                p.second = dx;    
+                p.second = dx;
+                break;
             }   
         }
     }
@@ -452,16 +474,30 @@ void SnakeGame::stageClear() // 할당 및 값 해제
     delete gateB;
     snake.pieceClear();
     board.setStage(++stage);
+    randomNumA = rand() % 4 + 2;
+    randomNumB = rand() % 2 + 2;
+    randomNumC = rand() % 2 + 2;
+    randomNumD = rand() % 2 + 2;
     initialize();
 
 }
+void SnakeGame::missionCheck()
+{
+    if (randomNumA <= maxSnake) board.updateMissionCurSnakeCheck();
+    if (randomNumB <= growNumber) board.updateMissionGrowCheck();
+    if (randomNumC <= poisonNumber) board.updateMissionPoisonCheck();
+    if (randomNumD <= gateNumber) board.updateMissionGateCheck();
+    
+}
 bool SnakeGame::missionClear()
 {
-    if (randomNumA <= growNumber && randomNumB <= poisonNumber && randomNumC <= gateNumber && randomNumD <= maxSnake) return true;
+    if (randomNumA <= maxSnake && randomNumB <= growNumber && randomNumC <= poisonNumber && randomNumD <= gateNumber) return true;
     return false;
 }
 void SnakeGame::redraw()
 {
+    missionCheck();
+
     int height, width;
     if (gameOver)
     {

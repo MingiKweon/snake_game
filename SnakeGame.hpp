@@ -5,6 +5,7 @@
 #include <ctime>
 #include <stdlib.h>
 #include <utility>
+#include <string>
 
 #include "Board.hpp"
 #include "Pointer.hpp"
@@ -16,12 +17,14 @@
 class SnakeGame
 {
 private:
+
     Board board;
     ItemGrow *itemGrow;
     ItemSpeed *itemSpeed;
     ItemPoison *itemPoison;
     Gate *gateA;
     Gate *gateB;
+    SuddenWall *suddenWall;
     Snake snake;
     bool gameOver;
     int growNumber = 0;     // missionBoard part
@@ -30,11 +33,10 @@ private:
     int maxSnake = 0;
     int stage = 0;
     int score = 0;
-    //int randomNumA = rand() % 5 + 2;
-    int randomNumA = rand() % 2 + 1;
+    int randomNumA = rand() % 5 + 2;
     int randomNumB = rand() % 2 + 1;
     int randomNumC = rand() % 2 + 1;
-    int randomNumD = rand() % 5 + 2;
+    int randomNumD = rand() % 2 + 1;
     std::pair<int, int> p;
 public:
     SnakeGame(int height, int width);
@@ -42,6 +44,7 @@ public:
     void initialize();
     void stageClear();
     bool missionClear();
+    void missionCheck();
     void input();
     void updateState();
     void redraw();

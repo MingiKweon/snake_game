@@ -10,34 +10,13 @@ Board::Board(int height, int width)
         getmaxyx(stdscr, yMax, xMax); // 좌표 중앙
         // 맵 배열을 22 42로 구현
         board_win = newwin(22, 42, (yMax/2)-(height/2), (xMax/2)-(width/2));
-        // 윈도우 객체를 넘겨줘야함 snakegame.hpp에 
         score_win = newwin(11, 39, (yMax/2)-(height/2), (xMax/2)-(width/2)+42);
         mission_win = newwin(11, 39, (yMax/2)-(height/2) + 11, (xMax/2)-(width/2)+42);
-        box(score_win, 0, 0);
-        box(mission_win, 0, 0);
         
-
-        int q, w;
-        getmaxyx(score_win, q, w);
-        mvwprintw(score_win, q / 2 - 4, 1, "-------------Score Board-------------");
-        mvwprintw(score_win, q / 2 - 2, (w - 8) / 2 - 10, "B : ");
-        mvwprintw(score_win, q / 2, (w - 8) / 2 - 10, "+ : ");
-        mvwprintw(score_win, q / 2 + 2, (w - 8) / 2 - 10, "- : ");
-        mvwprintw(score_win, q / 2 + 4, (w - 8) / 2 - 10, "G : ");
-        
-        getmaxyx(mission_win, q, w);
-        mvwprintw(mission_win, q / 2 - 4, 1, "------------Mission Board------------");
-        mvwprintw(mission_win, q / 2 - 2, (w - 10) / 2 - 10, "B : ");
-        mvwprintw(mission_win, q / 2, (w - 10) / 2 - 10, "+ : ");
-        mvwprintw(mission_win, q / 2 + 2, (w - 10) / 2 - 10, "- : ");
-        mvwprintw(mission_win, q / 2 + 4, (w - 10) / 2 - 10, "G : ");
-        
-        wrefresh(score_win);
-        wrefresh(mission_win);
-
+        drawState();
         keypad(board_win, true); // 키입력 사용
         wtimeout(board_win, 400); // 딜레이
-
+        refresh();
     }
 void Board::initialize()
     {
@@ -46,7 +25,7 @@ void Board::initialize()
     }
 void Board::drawMap() // 맵 구현부
 {
-    int (*map)[42] = mapData.getMap(stage);
+    int (*map)[42] = mapData.getMap(3);
     for(int i = 0; i < 22; i++) 
     {
         for(int j = 0; j < 42; j++) {
@@ -68,6 +47,26 @@ void Board::drawMap() // 맵 구현부
         }
     }
 }
+void Board::drawState()
+{
+    box(score_win, 0, 0);
+    box(mission_win, 0, 0);
+    int q, w;
+    getmaxyx(score_win, q, w);
+    mvwprintw(score_win, q / 2 - 4, 1, "-------------Score Board-------------");
+    mvwprintw(score_win, q / 2 - 2, (w - 8) / 2 - 10, "B : ");
+    mvwprintw(score_win, q / 2, (w - 8) / 2 - 10, "+ : ");
+    mvwprintw(score_win, q / 2 + 2, (w - 8) / 2 - 10, "- : ");
+    mvwprintw(score_win, q / 2 + 4, (w - 8) / 2 - 10, "G : ");
+    mvwprintw(score_win, 3, 19, "/");
+    
+    getmaxyx(mission_win, q, w);
+    mvwprintw(mission_win, q / 2 - 4, 1, "------------Mission Board------------");
+    mvwprintw(mission_win, q / 2 - 2, (w - 10) / 2 - 10, "B : ");
+    mvwprintw(mission_win, q / 2, (w - 10) / 2 - 10, "+ : ");
+    mvwprintw(mission_win, q / 2 + 2, (w - 10) / 2 - 10, "- : ");
+    mvwprintw(mission_win, q / 2 + 4, (w - 10) / 2 - 10, "G : ");
+}
 void Board::add(Pointer pointer)
 {
     mvwaddch(board_win, pointer.getY(), pointer.getX(), pointer.getIcon());
@@ -75,7 +74,10 @@ void Board::add(Pointer pointer)
  void Board::clear()
     {
         wclear(board_win);
+        wclear(score_win);
+        wclear(mission_win);
         drawMap();
+        drawState();
     }
 void Board::refresh()
     {
@@ -112,7 +114,7 @@ void Board::updateScoreCurSnake(int snake)
 }
 void Board::updateScoreMaxSnake(int snake)
 {
-    mvwprintw(score_win, 3, 20, "%d", snake); // y 좌표 일치
+    mvwprintw(score_win, 3, 21, "%d", snake); // y 좌표 일치
     wrefresh(score_win);
 }
 void Board::updateScoreGrow(int score)
@@ -148,6 +150,27 @@ void Board::updateMissionPoison(int poison)
 void Board::updateMissionGate(int gate)
 {
     mvwprintw(mission_win, 9, 17, "%d", gate); // y 좌표 일치
+    wrefresh(mission_win);
+}
+
+void Board::updateMissionCurSnakeCheck()
+{
+    mvwprintw(mission_win, 3, 21, "V"); // y 좌표 일치
+    wrefresh(mission_win);
+}
+void Board::updateMissionGrowCheck()
+{
+    mvwprintw(mission_win, 5, 21, "V"); // y 좌표 일치
+    wrefresh(mission_win);
+}
+void Board::updateMissionPoisonCheck()
+{
+    mvwprintw(mission_win, 7, 21, "V"); // y 좌표 일치
+    wrefresh(mission_win);
+}
+void Board::updateMissionGateCheck()
+{
+    mvwprintw(mission_win, 9, 21, "V"); // y 좌표 일치
     wrefresh(mission_win);
 }
 

@@ -14,7 +14,7 @@ SnakePiece::SnakePiece(int y, int x)
     }
 Snake::Snake()
     {
-        curDirection = down;
+        curDirection = up;
     }
 void Snake::addPiece(SnakePiece piece)
     {
@@ -65,11 +65,11 @@ SnakePiece Snake::nextHead()
         int col = head().getX();
         switch(curDirection)
         {
-            case down:
-                row++;
-                break;
             case up:
                 row--;
+                break;
+            case down:
+                row++;
                 break;
             case left:
                 col--;

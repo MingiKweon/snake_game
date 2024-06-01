@@ -32,6 +32,11 @@ public:
     void getWallCoordinates(int& y, int& x);
     void setStage(int a);
     int getStage();
+    void drawState();
+    void updateMissionCurSnakeCheck();
+    void updateMissionGrowCheck();
+    void updateMissionPoisonCheck();
+    void updateMissionGateCheck();
     WINDOW* getBoardWin();
     WINDOW* getScoreWin();
     WINDOW* getMissionWin();
