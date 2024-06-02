@@ -25,7 +25,7 @@ void Board::initialize()
     }
 void Board::drawMap() // 맵 구현부
 {
-    int (*map)[42] = mapData.getMap(3);
+    int (*map)[42] = mapData.getMap(stage);
     for(int i = 0; i < 22; i++) 
     {
         for(int j = 0; j < 42; j++) {

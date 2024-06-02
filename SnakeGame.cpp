@@ -205,7 +205,7 @@ void SnakeGame::updateState()
             gateB = nullptr;
             delete gateA;
             delete gateB;
-        }
+        }    
 
     // 헤드가 몸에 박았을 경우에 대한 처리
     // 헤드를 제외한 덱이 0이되는 경우가 발생할 수 있음 , 몸길이가 3미만 게임오버
@@ -472,6 +472,7 @@ void SnakeGame::stageClear() // 할당 및 값 해제
     delete itemSpeed;
     delete gateA;
     delete gateB;
+    snake.setDirection(up);
     snake.pieceClear();
     board.setStage(++stage);
     randomNumA = rand() % 4 + 2;

@@ -12,7 +12,7 @@ ItemPoison::ItemPoison(int y, int x)
 {
     this->y = y;
     this->x = x;
-    this->icon = '$';
+    this->icon = 'P';
     saveTime = time(nullptr);
 }
 ItemSpeed::ItemSpeed(int y, int x)
@@ -47,6 +47,6 @@ SuddenWall::SuddenWall(int y, int x)
 {
     this->y = y;
     this->x = x;
-    this->icon = 'X';
+    this->icon = 'x';
     saveTime = time(nullptr);
 }

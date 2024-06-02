@@ -111,23 +111,4 @@ private:
 };
 };
 
-class Wall : public Pointer
-{
-public:
-    
-    Wall()
-    {
-        this->x = x;
-        this->y = y;
-        this->icon = 'X';
-    }
-    Wall(int y, int x)
-    {
-        this->x = x;
-        this->y = y;
-        this->icon = 'X';
-    }
-
-};
-
 #endif

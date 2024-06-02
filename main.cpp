@@ -3,7 +3,7 @@
 #include "Board.hpp"
 #include "SnakeGame.hpp"
 #include "Pointer.hpp"
-
+#include "GameTime.hpp"
 
 #define BOARD_ROWS 17
 #define BOARD_COLS 17 * 2.5
@@ -19,6 +19,8 @@ int main(){
     curs_set(0); // 커서 미표시
     // 2중 while로 clear 함수가 호출되면 내부 while문 종료 후 새 객체 생성?
     SnakeGame game(BOARD_ROWS, BOARD_COLS);
+    GameTime gametime(BOARD_ROWS, BOARD_COLS);
+    time_t startTime = time(nullptr);
 
     while(!(game.isOver()) && game.getStage() < 4)
     {
@@ -26,6 +28,7 @@ int main(){
 
         game.updateState(); // 게임 진행부
         game.redraw(); // 갱신
+        gametime.displayTime(startTime);
     }
     int height, width;
     getmaxyx(game.getBoardWin(), height, width);
