@@ -69,16 +69,16 @@ void SnakeGame::input()
     switch (input)
     { 
     case KEY_UP: // 반대방향 눌리지 않아야함, 같은 방향을 누를 수 없어야함
-        if (snake.getDirection() != down) snake.setDirection(up);
+        if (snake.getDirection() != down && snake.getDirection() != up) snake.setDirection(up);
         break;
     case KEY_DOWN:
-        if (snake.getDirection() != up) snake.setDirection(down);
+        if (snake.getDirection() != up && snake.getDirection() != down) snake.setDirection(down);
         break;
     case KEY_LEFT:
-        if (snake.getDirection() != right) snake.setDirection(left);
+        if (snake.getDirection() != right && snake.getDirection() != left) snake.setDirection(left);
         break;
     case KEY_RIGHT:
-        if (snake.getDirection() != left) snake.setDirection(right);
+        if (snake.getDirection() != left && snake.getDirection() != right) snake.setDirection(right);
         break;
     }
     }
