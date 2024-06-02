@@ -230,6 +230,11 @@ void SnakeGame::updateState()
         next.setIcon('X');
         gameOver = true;
     }
+    if (mvwinch(board.getBoardWin(), next.getY(), next.getX()) == 'x') 
+    {
+        next.setIcon('x');
+        gameOver = true;
+    }
     // 5초마다 아이템이 생겼다 사라짐
     if (itemGrow != nullptr && difftime(curTime, itemGrow->saveTime) >= 5.0) // difftime의 반환형은 double이다
     {
