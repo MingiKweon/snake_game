@@ -36,13 +36,6 @@ Empty::Empty(int y, int x)
         this->x = x;
         this->icon = ' ';
     }
-    
-EmptyWall::EmptyWall(int y, int x)
-{
-        this->y = y;
-        this->x = x;
-        this->icon = 'X';
-}
 SuddenWall::SuddenWall(int y, int x)
 {
     this->y = y;

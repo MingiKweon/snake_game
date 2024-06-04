@@ -34,12 +34,6 @@ class Empty : public Pointer
 public:
     Empty(int y, int x);
 };
-
-class EmptyWall : public Pointer
-{
-public:
-    EmptyWall(int y, int x);
-};
 // 게이트 관리
 class Gate : public Pointer
 {

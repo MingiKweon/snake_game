@@ -33,7 +33,7 @@ private:
     int maxSnake = 0;
     int stage = 0;
     int score = 0;
-    int randomNumA = rand() % 5 + 2;
+    int randomNumA = rand() % 4 + 2;
     int randomNumB = rand() % 2 + 1;
     int randomNumC = rand() % 2 + 1;
     int randomNumD = rand() % 2 + 1;
