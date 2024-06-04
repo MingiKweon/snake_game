@@ -274,11 +274,11 @@ void SnakeGame::updateState()
     snake.addPiece(next);
     board.add(next);
     board.updateScoreCurSnake(snake.getSnakeSize());
-        if (snake.getSnakeSize() > maxSnake)
-        {
-            maxSnake = snake.getSnakeSize();
-            board.updateScoreMaxSnake(maxSnake);
-        }
+    if (snake.getSnakeSize() > maxSnake)
+    {
+        maxSnake = snake.getSnakeSize();
+        board.updateScoreMaxSnake(maxSnake);
+    }
     if (snake.getPiece().size() > 1) 
     {
         SnakePiece body = snake.getPiece().back();
@@ -463,7 +463,7 @@ void SnakeGame::moveGateBtoA(SnakePiece& next)
 
 void SnakeGame::stageClear() // 할당 및 값 해제
 {
-    wtimeout(getBoardWin(), 400);
+    wtimeout(getBoardWin(), 200);
     growNumber = 0;
     poisonNumber = 0;
     gateNumber = 0;
