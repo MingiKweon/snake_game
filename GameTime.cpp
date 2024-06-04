@@ -21,6 +21,6 @@ void GameTime::displayTime(time_t startTime)
         int hours = second / 3600;
         int minutes = (second % 3600) / 60;
         int seconds = second % 60;
-        mvwprintw(time_win, tWinY / 2, (tWinX - 12) / 2 - 10, "Time of Game : %d : %d : %d", hours, minutes, seconds);
+        mvwprintw(time_win, tWinY / 2, (tWinX - 12) / 2 - 10, "Time of Game : %02d : %02d : %02d", hours, minutes, seconds);
         wrefresh(time_win);
 }

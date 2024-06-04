@@ -15,7 +15,7 @@ Board::Board(int height, int width)
         
         drawState();
         keypad(board_win, true); // 키입력 사용
-        wtimeout(board_win, 300); // 딜레이
+        wtimeout(board_win, 200); // 딜레이
         refresh();
     }
 void Board::initialize()
